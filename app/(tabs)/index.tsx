@@ -4,7 +4,7 @@ import ProductCard from '@/components/ProductCard';
 import Wrapper from '@/components/Wrapper';
 import { useProductsStore } from '@/store/productStore';
 import { Product } from '@/type';
-import { AntDesign } from '@expo/vector-icons';
+import { AntDesign, MaterialCommunityIcons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
@@ -24,8 +24,8 @@ const {
   categories,
   loading,
   error,
-fetchProducts,
-fetchCategories
+  fetchProducts,
+  fetchCategories
 } = useProductsStore();
 
 useEffect(()=>{
@@ -44,7 +44,7 @@ const navigateToCategory=(category:string)=>{
   router.push({
   pathname:"/(tabs)/shop",
   params: {
-    category: category,
+     category,
   },
   });
 };
@@ -86,7 +86,7 @@ if (error) {
   key={category}
    style={styles.categoryButton} 
   onPress={()=>navigateToCategory(category)}>
-    <AntDesign 
+    <MaterialCommunityIcons 
     name="tag" 
     size={16} 
     color="#1e90ff"
@@ -97,7 +97,7 @@ if (error) {
 ))}
           </ScrollView>
         </View>
-        <View>
+        <View style={styles.featuredSection}>
            <View style={styles.sectionHeader}>
             <Text style={styles.sectionTitle}>Featured Products</Text>
             <TouchableOpacity>
@@ -117,6 +117,22 @@ if (error) {
               </View>
             )} 
          />
+        </View>
+        {/* Newest Products */}
+        <View style={styles.newestSection}>
+          <View style={styles.sectionHeader}>
+            <Text style={styles.sectionTitle}>Newest Arrivals</Text>
+            <TouchableOpacity>
+              <Text style={styles.seeAllText}>See All</Text>
+            </TouchableOpacity>
+          </View>
+          <View style={styles.productGrid}>
+            {products?.map((product)=>(
+              <View key={product?.id} style={styles.productContainer}>
+                <ProductCard product={product} customStyle={{width:"100%"}}/>
+              </View>
+            ))}
+          </View>
         </View>
       </ScrollView>
     </View>
@@ -146,6 +162,19 @@ marginVertical: 16,
 marginVertical: 16,
 marginBottom: 32,
   },
+
+  productGrid: {
+flexDirection: "row",
+flexWrap: "wrap",
+justifyContent: "space-between",
+paddingRight: 20,
+  },
+
+  productContainer: {
+width: "48%",
+  },
+
+  
 
 sectionTitle:{
 fontSize: 18,

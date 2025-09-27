@@ -19,13 +19,11 @@ const styles = StyleSheet.create({
         flex:1,
         backgroundColor: "#ffff",
         marginTop: Platform.OS === "android"?30 : 0,
-        paddingHorizontal: 20,
+        
         paddingVertical: 10
     },
     container: {
         flex: 1,
-        
-        paddingHorizontal: 20,
         paddingVertical: 10,
     }
 

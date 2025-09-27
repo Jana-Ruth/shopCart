@@ -1,6 +1,10 @@
-import { Image, StyleProp, StyleSheet, Text, TouchableOpacity, View, ViewStyle } from 'react-native'
+import { Alert, Image, StyleProp, StyleSheet, Text, TouchableOpacity, View, ViewStyle } from 'react-native'
 import React from 'react'
 import { Product } from '@/type';
+import Button from './Button';
+import Toast from 'react-native-toast-message';
+import { useRouter } from 'expo-router';
+
 interface ProductCardProps {
     product: Product;
     compact?: boolean;
@@ -11,9 +15,24 @@ const ProductCard:React.FC<ProductCardProps> = ({
     compact = false,
     customStyle,
 }) => {
-    const {id,title,price,image,category}=product
+    const {id,title,price,image,category}=product;
+    const router = useRouter()
+const handleProductRoute= (e: any) => {
+router.push("/product/[id]")
+}
+    const handleAddToCart = () => {
+     Toast.show({
+      type: "success",
+      text1: "Product Added To Cart",
+      text2: `${title} has deen added to your added to cart`,
+      visibilityTime: 2000,
+     })
+    }
+
   return (
-    <TouchableOpacity style={[styles.card, compact && styles.compactCard,
+    <TouchableOpacity 
+    onPress={handleProductRoute}
+    style={[styles.card, compact && styles.compactCard,
         customStyle]}
         activeOpacity={0.8}
         >
@@ -35,7 +54,13 @@ const ProductCard:React.FC<ProductCardProps> = ({
 
                 </Text>
                 <View style={styles.footer}>
-                    <Text style={styles.price}>${price.toFixed(2)}</Text>
+                    <Text style={[styles.price, !compact && {marginBottom: 7}]}>${price.toFixed(2)}</Text>
+                    {!compact && 
+                    <Button 
+                    onPress={handleAddToCart}
+                    title="Add To Cart" 
+                    size="small" variant="outline"/>
+                    }
                 </View>
               </View>
     </TouchableOpacity>
@@ -57,7 +82,7 @@ overflow: "hidden",
 width: "48%",
 marginBottom: 16,
 borderWidth: 1,
-borderColor: "#a9a9a9",
+borderColor: "#dcd9d9ff",
 },
 
 compactCard: {

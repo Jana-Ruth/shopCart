@@ -2,7 +2,7 @@ import { Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native
 import React from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import Logo from './Logo'
-import { AntDesign, MaterialCommunityIcons } from '@expo/vector-icons'
+import {  AntDesign, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons'
 import { SearchBar } from 'react-native-screens'
 import { router, useRouter } from 'expo-router'
 
@@ -17,11 +17,11 @@ const HomeHeader = () => {
         style={styles.SearchButton} 
         onPress={()=>router.push("/(tabs)/Search")}
         >
-            <AntDesign 
-            name='search1' 
-            size={20} c
-            olor="#a9a9a9" 
-            />
+        <Ionicons
+        name='search-outline'
+        size={20}
+        color={"#a9a9a9"}
+        />
         </TouchableOpacity>
 
         <TouchableOpacity 
@@ -30,8 +30,8 @@ const HomeHeader = () => {
         >
             <MaterialCommunityIcons
             name='heart-outline' 
-            size={20} c
-            olor="#a9a9a9" 
+            size={20} 
+            color="#a9a9a9" 
             />
             <View style={styles.itemsView}>
                 <Text style={styles.itemsText}>0</Text>
@@ -44,8 +44,8 @@ const HomeHeader = () => {
         >
             <MaterialCommunityIcons
             name='cart-outline' 
-            size={20} c
-            olor="#a9a9a9" 
+            size={20} 
+            color="#a9a9a9" 
             />
             <View style={styles.itemsView}>
                 <Text style={styles.itemsText}>0</Text>
@@ -62,7 +62,7 @@ export default HomeHeader
 const styles = StyleSheet.create({
    container: {
     backgroundColor: "#ffffff",
-    
+    paddingBottom: -40
    },
    header: {
     flexDirection: "row",
