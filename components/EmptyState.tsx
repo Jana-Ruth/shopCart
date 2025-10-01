@@ -1,6 +1,7 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import { AntDesign, MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
+import Button from './Button';
 type EmptyStateType="cart" | "search" | "wishlist" | "favorites" | "orders" | "profile";
 interface EmptyStateProps{
     type: EmptyStateType;
@@ -68,8 +69,16 @@ const EmptyState:React.FC <EmptyStateProps> = ({
     }
   return (
     <View style={styles.container}>
-      <Text>{getIcon()}</Text>
-      <Text>{message || getDefaultMessage()}</Text>
+      <Text style={styles.iconContainer}>{getIcon()}</Text>
+      <Text style={styles.message}>{message || getDefaultMessage()}</Text>
+      {actionLabel && onAction && (
+        <Button
+        title={actionLabel}
+        onPress={onAction}
+        variant='primary'
+        style={styles.button}
+        />
+      )}
     </View>
   )
 }
@@ -88,7 +97,7 @@ const styles = StyleSheet.create({
     },
     message: {
         fontSize: 18,
-        color: "#1e90ff",
+        color: "#a9a9a9a9",
         textAlign: "center",
         marginBottom: 24
     },

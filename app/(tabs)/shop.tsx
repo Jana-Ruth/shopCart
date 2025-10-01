@@ -10,7 +10,13 @@ import { ScrollView } from "react-native";import { useProductsStore } from '@/st
 import { useLocalSearchParams, useSearchParams } from 'expo-router/build/hooks';
 import LoadingSpinner from '@/components/LoadingSpinner';
 import EmptyState from '@/components/EmptyState';
-;
+import { FlatList } from 'react-native';
+import ProductCard from '@/components/ProductCard';
+
+
+
+const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
+
 const ShopScreen = () => {
   const { category:categoryParam} = useLocalSearchParams<{
     category?:string;
@@ -133,15 +139,25 @@ const ShopScreen = () => {
   // }
   return <TouchableOpacity style={styles.container}>
     {renderHeader()}
-    {filteredProducts?.length !== 0 ? (
+    {filteredProducts?.length === 0 ? (
                 <EmptyState 
                   type = "search"
                   message = "No products found matching your criteria"
                 />
     ):(
-      <View>
-        <Text>products</Text>
-      </View>
+         <FlatList
+         data={filteredProducts}
+         keyExtractor={(item) => item.id.toString()}
+         numColumns={2}
+         renderItem ={({item})=>(
+          <View style={styles.productContainer}>
+            <ProductCard product={item} customStyle={{width: "100%"}}/>
+          </View>
+         )}
+         contentContainerStyle={styles.productsGrid}
+         columnWrapperStyle={styles.columnWrapper}
+          ListFooterComponent={<View style={styles.footer} />}
+         />
     )}
     </TouchableOpacity>;
 
@@ -247,8 +263,9 @@ const styles = StyleSheet.create({
      color: "#fff"
   },
   productsGrid: {
-    paddingHorizontal: 5,
+    paddingHorizontal: 10,
     paddingTop: 16,
+    paddingBottom: 50,
   },
   columnWrapper: {
     justifyContent: "space-between",
