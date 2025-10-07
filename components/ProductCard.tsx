@@ -15,7 +15,7 @@ const ProductCard:React.FC<ProductCardProps> = ({
     compact = false,
     customStyle,
 }) => {
-    const {id,title,price,image,category}=product;
+    const {id,title,price,image,category, rating}=product;
     const router = useRouter()
 const handleProductRoute= (e: any) => {
 router.push("/product/[id]")
@@ -54,7 +54,19 @@ router.push("/product/[id]")
 
                 </Text>
                 <View style={styles.footer}>
-                    <Text style={[styles.price, !compact && {marginBottom: 7}]}>${price.toFixed(2)}</Text>
+
+                    <View>
+                      <Text 
+                      style={[styles.price, 
+                      !compact && {marginBottom: 7
+
+                      }]}
+                      >
+                        ${price.toFixed(2)}
+                        </Text>
+                        <Text>ratings: {rating?.count}</Text>
+                    </View>
+
                     {!compact && 
                     <Button 
                     onPress={handleAddToCart}
@@ -93,7 +105,8 @@ marginRight: 12,
 imageContainer: {
     position: "relative",
     height: 150,
-    backgroundColor: "#fff"
+    backgroundColor: "#fff",
+    padding: 12,
 },
 
 image: {

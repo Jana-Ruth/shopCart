@@ -1,4 +1,4 @@
-import { Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { Modal, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import HomeHeader from '@/components/HomeHeader';
@@ -47,7 +47,11 @@ const ShopScreen = () => {
       setCategory(categoryParam)
     }
   }, []);
-  console.log(filteredProducts)
+
+  useEffect(() =>{
+     setIsFilterActive(selectedCategory !== null || activeSortOption !== null)
+  },[])
+  console.log(loading)
   const renderHeader = () => {
     return(
       <View style={styles.header}>
@@ -69,8 +73,9 @@ const ShopScreen = () => {
           </View>
         </TouchableOpacity>
         <TouchableOpacity 
+        onPress={()=>setShowSortModal(true)}
         style={[
-          styles.sortOption, 
+          styles.sortOptionView, 
           isFilterActive  &&
           styles.activeSortButton
           ]}
@@ -121,25 +126,36 @@ const ShopScreen = () => {
       </View>
     )
   }
-  // if (loading){
-  //   return <View style={{flex: 1, alignItems: "center", justifyContent: "center"}}>
-  //     <LoadingSpinner fullScreen/>
-  //   </View>
-  // }
-  // if (!error) {
-  //   return (
-  //     <Wrapper>
-  //       <View style={styles.errorContainer}>
-  //         <Text style={styles.errorText}>
-  //           Error: {error}
-  //         </Text>
-  //       </View>
-  //     </Wrapper>
-  //   )
-  // }
+ 
+  if (error) {
+    return (
+      <Wrapper>
+        <View style={styles.errorContainer}>
+          <Text style={styles.errorText}>
+            Error: {error}
+          </Text>
+        </View>
+      </Wrapper>
+    )
+  }
+  const handleSort = (sortBy: "price-asc" | "price-desc" | "rating") => {
+    sortProducts(sortBy);
+    setActiveSortOption(sortBy);
+    setShowSortModal(false);
+    setIsFilterActive(true);
+  }
   return <TouchableOpacity style={styles.container}>
     {renderHeader()}
-    {filteredProducts?.length === 0 ? (
+    { loading ? (
+      <View 
+      style={{ 
+        flex: 1, 
+        alignItems: "center", 
+        justifyContent: "center"
+        }}>
+        <LoadingSpinner fullScreen/>
+      </View>
+    ) : filteredProducts?.length === 0 ? (
                 <EmptyState 
                   type = "search"
                   message = "No products found matching your criteria"
@@ -159,6 +175,66 @@ const ShopScreen = () => {
           ListFooterComponent={<View style={styles.footer} />}
          />
     )}
+   <Modal
+     visible={showSortModal} 
+     transparent   
+     animationType='fade'
+     onRequestClose={() => setShowSortModal(false)}
+     >
+     <View style={styles.modalOverlay}>
+      <View style={styles.modalContent}>
+        <View style={styles.modalHeader}>
+          <Text style={styles.modalTitle}>Sort By</Text>
+          <TouchableOpacity onPress={() => setShowSortModal(false)}>
+          <AntDesign 
+          name='close' 
+          size={24}
+          color={"#2d2c2cff"}
+          onPress={() => setShowSortModal(false)}
+          />
+          </TouchableOpacity>
+        </View>
+        <TouchableOpacity style={styles.sortOption}
+          onPress={()=>handleSort("price-asc")}
+          >
+          <Text style={[
+            styles.sortOptionText,
+            activeSortOption === 
+            "price-asc" && 
+            styles.activeSortText
+          ]}
+          >Price: Low to High
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.sortOption}
+          onPress={()=>handleSort("price-desc")}
+          >
+          <Text style={[
+            styles.sortOptionText, 
+            activeSortOption === 
+            "price-desc" && 
+            styles.activeSortText
+            ]}
+            >
+              Price: High to Low
+              </Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.sortOption}
+          onPress={()=>handleSort("rating")}
+          >
+          <Text style={[
+            styles.sortOptionText, 
+            activeSortOption === 
+            "rating" && 
+            styles.activeSortText
+            ]}
+            >
+              Highest Rated
+              </Text>
+        </TouchableOpacity>
+      </View>
+     </View>
+   </Modal>
     </TouchableOpacity>;
 
 }
@@ -240,6 +316,10 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "red",
   },
+  activeSortText:{
+    color: "#0982fcff",
+    fontWeight: "bold",
+  },
   categoriesContainer: {
     paddingVertical: 8,
     
@@ -265,7 +345,7 @@ const styles = StyleSheet.create({
   productsGrid: {
     paddingHorizontal: 10,
     paddingTop: 16,
-    paddingBottom: 50,
+    
   },
   columnWrapper: {
     justifyContent: "space-between",
@@ -278,14 +358,16 @@ const styles = StyleSheet.create({
   },
   modalOverlay: {
     flex: 1,
-    backgroundColor: "#000",
+    backgroundColor: "#3a3737ff",
     justifyContent: "flex-end",
+    opacity: 0.8,
   },
   modalContent: {
     backgroundColor: "#fff",
     borderTopLeftRadius: 16,
     borderTopRightRadius: 16,
     padding: 24,
+    opacity: 2
   },
   modalHeader: {
    flexDirection: "row",
@@ -296,16 +378,21 @@ const styles = StyleSheet.create({
   modalTitle: {
    fontFamily: "Inter-SemiBold",
    fontSize: 18,
-   color: "#fff"
+   color: "#2d2c2cff"
+  },
+  sortOptionView: {
+    borderWidth: 1,
+     borderColor: "#dcd9d9ff",
+     width: 45,
+     height: 45,
+     borderRadius: 8,
+     alignItems: "center",
+     justifyContent: "center",
   },
   sortOption: {
-  borderWidth: 1,
-  borderColor: "#dcd9d9ff",
-  width: 45,
-  height: 45,
-  borderRadius: 8,
-  alignItems: "center",
-  justifyContent: "center",
+    paddingVertical: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: "#2d2c2cff",
   },
   activeSortOption: {
     backgroundColor: "#1e90ff",
@@ -313,7 +400,7 @@ const styles = StyleSheet.create({
   sortOptionText: {
    fontFamily: "Inter-Regular",
    fontSize: 16,
-   color: "#fff"
+   color: "#2d2c2cff"
   },
   errorContainer: {
     flex:1,
