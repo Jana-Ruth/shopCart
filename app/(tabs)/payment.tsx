@@ -3,6 +3,8 @@ import React from 'react'
 import Button from '@/components/Button'
 import { useLocalSearchParams, useRouter } from 'expo-router'
 import { useAuthStore } from '@/store/authStore'
+import StripePayment from '@/components/StripePayment'
+
 
 //utility function
 const getStringParam = (value: string | string[] | undefined): string =>
@@ -14,6 +16,15 @@ const PaymentScreen = () => {
   useLocalSearchParams();
   const {user} = useAuthStore();
   const totalValue = Number(getStringParam(total));
+
+const stripe = StripePayment({
+    paymentIntent:getStringParam(paymentIntent),
+    ephemeralKey:getStringParam(ephemeralKey),
+    customer: getStringParam(customer),
+    orderId:getStringParam(orderId),
+    userEmail:user?.email || "",
+    onSuccess: ()=>router.push("/(tabs)/Orders"),
+})
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Complete Your Payment</Text>
@@ -21,7 +32,7 @@ const PaymentScreen = () => {
       <Text style={styles.totalPrice}>Total: ${totalValue.toFixed(2)}</Text>
       <Button 
       title="Confirm payment" 
-      onPress={() => {}}
+      onPress={stripe.handlePayment}
       fullWidth
       style={styles.button}
         />

@@ -65,7 +65,7 @@ const CartScreen = () => {
           email: user?.email,
         };
         const response = await axios.post(
-          "http://10.115.251.28:8000/checkout", 
+          "http://10.27.113.28:8000/checkout", 
           payload,
           {
             headers: {

@@ -9,9 +9,6 @@ import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { Text, View,  StyleSheet, ScrollView, TouchableOpacity, FlatList, } from 'react-native';
-
-
-
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 
